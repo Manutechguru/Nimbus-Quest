@@ -447,74 +447,67 @@ const Footer: React.FC = () => {
     };
 
     return (
-        <footer className="bg-gradient-to-b from-ice-blue to-white text-slate-600 border-t border-slate-200">
-            <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-
+        <footer className="bg-slate-900 text-slate-400">
+            <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-
                     {/* Column 1: Branding */}
                     <div className="space-y-4 pr-8">
                         <a href="#home" onClick={() => scrollToSection('home')} className="inline-block">
-                            <img src="/logo.png" alt="Nimbus Quest Logo" className="h-28 w-auto" />
+                            <img src="/logo.png" alt="Nimbus Quest Logo" className="h-32 w-auto" textColor="white"/>
                         </a>
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm">
                             Empowering Businesses to Evolve Digitally.
                         </p>
                     </div>
 
-                    {/* Column 2: Links */}
+                    {/* Column 2: Quick Links */}
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-900 mb-4">Quick Links</h3>
+                        <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
                         <ul className="space-y-3">
-                            <li><a onClick={() => scrollToSection('about')} className="hover:text-blue-600 cursor-pointer transition-colors">About Us</a></li>
-                            <li><a onClick={() => scrollToSection('services')} className="hover:text-blue-600 cursor-pointer transition-colors">Services</a></li>
-                            <li><a onClick={() => scrollToSection('projects')} className="hover:text-blue-600 cursor-pointer transition-colors">Projects</a></li>
-                            <li><a onClick={() => scrollToSection('contact')} className="hover:text-blue-600 cursor-pointer transition-colors">Contact</a></li>
+                            <li><a href="#about" onClick={() => scrollToSection('about')} className="hover:text-white transition-colors">About Us</a></li>
+                            <li><a href="#services" onClick={() => scrollToSection('services')} className="hover:text-white transition-colors">Services</a></li>
+                            <li><a href="#projects" onClick={() => scrollToSection('projects')} className="hover:text-white transition-colors">Projects</a></li>
+                            <li><a href="#contact" onClick={() => scrollToSection('contact')} className="hover:text-white transition-colors">Contact</a></li>
                         </ul>
                     </div>
 
                     {/* Column 3: Contact */}
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-900 mb-4">Contact</h3>
-                        <ul className="space-y-4 text-slate-600">
+                        <h3 className="text-lg font-semibold text-white mb-4">Contact</h3>
+                        <ul className="space-y-4">
                             <li className="flex items-start">
-                                <LocationIcon className="w-5 h-5 mt-1 mr-3 text-blue-500" />
+                                <LocationIcon className="w-5 h-5 mt-1 mr-3 flex-shrink-0 text-blue-400" />
                                 <span>123 Digital Avenue, Tech City</span>
                             </li>
                             <li className="flex items-start">
-                                <MailIcon className="w-5 h-5 mt-1 mr-3 text-blue-500" />
-                                <a href="mailto:contact@nimbusquest.com" className="hover:text-blue-600">contact@nimbusquest.com</a>
+                                <MailIcon className="w-5 h-5 mt-1 mr-3 flex-shrink-0 text-blue-400" />
+                                <a href="mailto:contact@nimbusquest.com" className="hover:text-white transition-colors">contact@nimbusquest.com</a>
                             </li>
                             <li className="flex items-start">
-                                <PhoneIcon className="w-5 h-5 mt-1 mr-3 text-blue-500" />
-                                <a href="tel:+1234567890" className="hover:text-blue-600">(123) 456-7890</a>
+                                <PhoneIcon className="w-5 h-5 mt-1 mr-3 flex-shrink-0 text-blue-400" />
+                                <a href="tel:+1234567890" className="hover:text-white transition-colors">(123) 456-7890</a>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Column 4: Social */}
+                    {/* Column 4: Follow Us */}
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-900 mb-4">Follow Us</h3>
+                        <h3 className="text-lg font-semibold text-white mb-4">Follow Us</h3>
                         <div className="flex space-x-4">
-                            <a className="text-slate-500 hover:text-blue-600 transition-colors"><LinkedInIcon /></a>
-                            <a className="text-slate-500 hover:text-blue-600 transition-colors"><TwitterIcon /></a>
-                            <a className="text-slate-500 hover:text-blue-600 transition-colors"><FacebookIcon /></a>
+                            <a href="#" aria-label="LinkedIn" className="text-slate-400 hover:text-white transition-colors"><LinkedInIcon /></a>
+                            <a href="#" aria-label="Twitter" className="text-slate-400 hover:text-white transition-colors"><TwitterIcon /></a>
+                            <a href="#" aria-label="Facebook" className="text-slate-400 hover:text-white transition-colors"><FacebookIcon /></a>
                         </div>
                     </div>
-
                 </div>
 
-                <div className="mt-12 border-t border-slate-200 pt-6 text-center">
-                    <p className="text-sm text-slate-500">
-                        © {new Date().getFullYear()} Nimbus Quest Pvt. Ltd. All Rights Reserved.
-                    </p>
+                <div className="mt-16 border-t border-slate-800 pt-8 text-center">
+                    <p className="text-sm">&copy; {new Date().getFullYear()} Nimbus Quest Pvt. Ltd. All Rights Reserved.</p>
                 </div>
-
             </div>
         </footer>
     );
 };
-
 
 const BackToTopButton: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
