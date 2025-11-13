@@ -13,28 +13,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
 
-      - name: Sync S3 bucket
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Upload to S3
+        uses: aws-actions/s3-sync@v1
         with:
-          args: --delete
+          bucket: nimbusquest.com
+          source: ./dist
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: "us-east-1"
-          SOURCE_DIR: "dist"
+          AWS_REGION: us-east-1
 
       - name: Invalidate CloudFront cache
-        uses: chetan/invalidate-cloudfront-action@v1.5
+        uses: aws-actions/aws-cloudfront-invalidate-cache@v1
+        with:
+          distribution-id: E2MIQ6OMOXBH0V
+          paths: "/*"
         env:
-          DISTRIBUTION: ${{ secrets.AWS_CLOUDFRONT_ID }}
-          PATHS: "/*"
-          AWS_REGION: "us-east-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
