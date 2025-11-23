@@ -29,20 +29,13 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > ~/.ssh/lightsail.key
           chmod 600 ~/.ssh/lightsail.key
-          ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
 
       - name: Upload build files to Lightsail
-        env:
-          HOST: ${{ secrets.LIGHTSAIL_HOST }}
-          USER: ${{ secrets.LIGHTSAIL_USER }}
         run: |
-          echo "Uploading build to Lightsail..."
-          rsync -avz -e "ssh -i ~/.ssh/lightsail.key" \
-            dist/ $USER@$HOST:/var/www/nimbusquest/dist/
+          rsync -avz -e "ssh -i ~/.ssh/lightsail.key -o StrictHostKeyChecking=no" \
+            dist/ ubuntu@${{ secrets.LIGHTSAIL_HOST }}:/var/www/nimbusquest/dist/
 
       - name: Restart Nginx on Lightsail
-        env:
-          HOST: ${{ secrets.LIGHTSAIL_HOST }}
-          USER: ${{ secrets.LIGHTSAIL_USER }}
         run: |
-          ssh -i ~/.ssh/lightsail.key $USER@$HOST "sudo systemctl restart nginx"
+          ssh -i ~/.ssh/lightsail.key -o StrictHostKeyChecking=no \
+            ubuntu@${{ secrets.LIGHTSAIL_HOST }} "sudo systemctl restart nginx"
