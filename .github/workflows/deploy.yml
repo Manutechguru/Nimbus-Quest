@@ -1,4 +1,4 @@
-name: Deploy to S3 & CloudFront
+name: Deploy to Amazon Lightsail
 
 on:
   push:
@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
@@ -24,18 +24,25 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Sync S3 Bucket
-        run: aws s3 sync dist/ s3://nimbusquest.com/ --delete
-
-      - name: Invalidate CloudFront Cache
+      - name: Upload build files to Lightsail
+        env:
+          HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          USER: ${{ secrets.LIGHTSAIL_USER }}
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id E2MIQ6OM0XBH0V \
-            --paths "/*"
+          echo "Starting upload…"
+
+          mkdir -p ~/.ssh
+          echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > ~/.ssh/lightsail.key
+          chmod 600 ~/.ssh/lightsail.key
+
+          rsync -avz -e "ssh -i ~/.ssh/lightsail.key -o StrictHostKeyChecking=no" \
+            dist/ $USER@$HOST:/var/www/nimbusquest/dist/
+
+      - name: Restart Nginx on Lightsail
+        env:
+          HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          USER: ${{ secrets.LIGHTSAIL_USER }}
+        run: |
+          ssh -i ~/.ssh/lightsail.key -o StrictHostKeyChecking=no \
+            $USER@$HOST "sudo systemctl restart nginx"
+
