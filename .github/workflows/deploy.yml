@@ -24,18 +24,20 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Prepare SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > ~/.ssh/lightsail.key
+          chmod 600 ~/.ssh/lightsail.key
+          ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
+
       - name: Upload build files to Lightsail
         env:
           HOST: ${{ secrets.LIGHTSAIL_HOST }}
           USER: ${{ secrets.LIGHTSAIL_USER }}
         run: |
-          echo "Starting upload…"
-
-          mkdir -p ~/.ssh
-          echo "${{ secrets.LIGHTSAIL_SSH_KEY }}" > ~/.ssh/lightsail.key
-          chmod 600 ~/.ssh/lightsail.key
-
-          rsync -avz -e "ssh -i ~/.ssh/lightsail.key -o StrictHostKeyChecking=no" \
+          echo "Uploading build to Lightsail..."
+          rsync -avz -e "ssh -i ~/.ssh/lightsail.key" \
             dist/ $USER@$HOST:/var/www/nimbusquest/dist/
 
       - name: Restart Nginx on Lightsail
@@ -43,6 +45,4 @@ jobs:
           HOST: ${{ secrets.LIGHTSAIL_HOST }}
           USER: ${{ secrets.LIGHTSAIL_USER }}
         run: |
-          ssh -i ~/.ssh/lightsail.key -o StrictHostKeyChecking=no \
-            $USER@$HOST "sudo systemctl restart nginx"
-
+          ssh -i ~/.ssh/lightsail.key $USER@$HOST "sudo systemctl restart nginx"
